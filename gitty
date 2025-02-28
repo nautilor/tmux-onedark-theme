@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+onedark_white="#aab2bf"
+onedark_visual_grey="#3e4452"
+onedark_blue="#61afef"
+onedark_red="#e06c75"
+onedark_green="#98c379"
+
+missing_commit_format="#[fg=$onedark_blue,bg=$onedark_visual_grey,nounderscore,noitalics]"
+missing_files_format="#[fg=$onedark_red,bg=$onedark_visual_grey,nounderscore,noitalics]"
+nothing_to_commit_format="#[fg=$onedark_green,bg=$onedark_visual_grey,nounderscore,noitalics]"
+not_a_git_repo_format="#[fg=$onedark_white,bg=$onedark_visual_grey,nounderscore,noitalics]"
+
+current_branch=`git -C "$1" rev-parse --abbrev-ref HEAD 2>/dev/null`
+missing_commits=`git -C $1 log origin/$current_branch..$current_branch --oneline | wc -l`
+missing_files=`git -C $1 status --porcelain | wc -l`
+
+# if the current directory is not a git repository do not print anything
+if [ -z "$current_branch" ]; then
+	echo "$not_a_git_repo_format"
+	exit 1
+fi
+
+# everything is up to date
+if [ $missing_commits -eq 0 ] && [ $missing_files -eq 0 ]; then
+	echo "$nothing_to_commit_format✔"
+	exit 0
+fi
+
+# there are missing commits
+if [ $missing_commits -gt 0 ]; then
+	missing_commits="$missing_commit_format↑"
+else 
+	missing_commits=""
+fi
+
+# there are missing files
+if [ $missing_files -gt 0 ]; then
+	missing_files="$missing_files_format●"
+else
+	missing_files=""
+fi
+
+
+# just format the output
+if [ $missing_commits != "" ] && [ $missing_files != "" ]; then
+	echo "$missing_commits $missing_files"
+elif [ $missing_commits != "" ]; then
+	echo "$missing_commits"
+else
+	echo "$missing_files"
+fi
