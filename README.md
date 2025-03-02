@@ -1,5 +1,6 @@
 # tmux-onedark-theme
 
+
 My modified [odedlaz tmux theme](https://github.com/odedlaz/tmux-onedark-theme)
 
 ## Installation
@@ -36,3 +37,8 @@ set -g @plugin 'odedlaz/tmux-onedark-theme'
 
 ### Both mentioned above
 ![Both mentioned above](./screenshots/both.png)
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
